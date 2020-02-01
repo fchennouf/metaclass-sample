@@ -29,17 +29,27 @@ class BaseModelMetaClass(DefaultMeta):
                         attibute_args=dict(elements)
                         model = attibute_args.pop('model')
                         backref = attibute_args.pop('backref', None)
-                        # the foreign key take the attribute name with suffix _id, and the attribute_name is kept for the relationship attr
+                        # the foreign key take the attribute name with suffix _id,
+                        # and the attribute_name is kept for the relationship attr
                         setattr(
                             cls,
                             attribute_name+"_id",
-                            db.Column(model.id.name, db.Integer(), db.ForeignKey(model.__tablename__+"."+model.id.name), **attibute_args)
+                            db.Column(model.id.name,
+                                      db.Integer(),
+                                      db.ForeignKey(model.__tablename__+"."+model.id.name),
+                                      **attibute_args
+                            )
                         )
                         if backref:
                             setattr(
                                 cls,
                                 attribute_name,
-                                db.relationship(model.__name__, backref=db.backref(backref, uselist=False, lazy="immediate", cascade="all, delete-orphan"))
+                                db.relationship(model.__name__,
+                                                backref=db.backref(backref,
+                                                                   uselist=False,
+                                                                   lazy="immediate",
+                                                                   cascade="all, delete-orphan")
+                                                )
                             )
                         else:
                             setattr(cls, attribute_name, db.relationship(model.__name__))
@@ -53,7 +63,11 @@ class BaseModelMetaClass(DefaultMeta):
                             cls,
                             attribute_name + "_id",
                             # the column name must take the name of the column to which it points as a prefix
-                            db.Column(model.id.name+'__'+attribute_name, db.Integer(), db.ForeignKey(model.__tablename__ + "."+model.id.name), **attibute_args)
+                            db.Column(model.id.name+'__'+attribute_name,
+                                      db.Integer(),
+                                      db.ForeignKey(model.__tablename__ + "."+model.id.name),
+                                      **attibute_args
+                                      )
                         )
                         if backref:
                             setattr(
